@@ -401,21 +401,59 @@ function DashboardChart({ project }) {
 
 export default function HomePage() {
   const progress = useScrollProgress();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const closeMenu = () => {
+      if (window.innerWidth > 660) {
+        setMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", closeMenu);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("resize", closeMenu);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <>
       <div className="scroll-progress" style={{ width: `${progress}%` }} aria-hidden="true" />
 
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="Mohith Srinivasalu home">
-          <span>MS</span>
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#profile">Profile</a>
-          <a href="#dashboards">Dashboards</a>
-          <a href="#experience">Experience</a>
-          <a href="#education">Education</a>
-          <a href="#credentials">Credentials</a>
+      <header className={`site-header ${menuOpen ? "menu-open" : ""}`}>
+        <div className="header-bar">
+          <a className="brand" href="#top" aria-label="Mohith Srinivasalu home" onClick={closeMenu}>
+            <span>MS</span>
+          </a>
+          <button
+            className="menu-toggle"
+            type="button"
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-controls="primary-navigation"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+          </button>
+        </div>
+        <nav id="primary-navigation" aria-label="Primary navigation">
+          <a href="#profile" onClick={closeMenu}>Profile</a>
+          <a href="#dashboards" onClick={closeMenu}>Dashboards</a>
+          <a href="#experience" onClick={closeMenu}>Experience</a>
+          <a href="#education" onClick={closeMenu}>Education</a>
+          <a href="#credentials" onClick={closeMenu}>Credentials</a>
         </nav>
       </header>
 
